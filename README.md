@@ -1,59 +1,90 @@
 # Structural Damage Classification
 
-**Supervised Machine Learning Project**
+**Tugas 1 — Supervised Machine Learning 2026**
 
 ## 1. Project Overview
 
-This project applies supervised machine learning to classify building damage levels based on structural and building-related features. The target variable is `damage_grade`, representing five levels of building damage.
+Project ini bertujuan mengklasifikasikan tingkat kerusakan bangunan pascagempa berdasarkan karakteristik struktural dan informasi bangunan menggunakan pendekatan *Supervised Machine Learning*.
+
+Target klasifikasi yang digunakan adalah `damage_grade`, yang terdiri dari lima kelas tingkat kerusakan, yaitu Grade 1 hingga Grade 5.
 
 ## 2. Dataset
 
-The dataset is provided through the Kaggle competition used for this project. It consists of the following files:
+Dataset diperoleh melalui kompetisi Kaggle yang disediakan untuk tugas ini.
 
-- `train.csv` — training data containing target labels.
-- `test.csv` — data used to generate predictions.
-- `sample_submission.csv` — template for the prediction output.
+File dataset yang digunakan meliputi:
 
-### Download Instructions
+- `train.csv` — data training yang memuat fitur dan target.
+- `test.csv` — data yang digunakan untuk menghasilkan prediksi.
+- `sample_submission.csv` — template format file submission.
 
-1. Open the Kaggle competition page provided for this assignment.
-2. Join the competition and accept the competition rules if required.
-3. Navigate to the **Data** tab.
-4. Click **Download All** to download the dataset files.
-5. Extract the downloaded files and place `train.csv`, `test.csv`, and `sample_submission.csv` inside the project's `data/` directory.
+### Cara Mengunduh Dataset
 
-Dataset CSV files are excluded from GitHub through `.gitignore`.
+1. Buka [halaman kompetisi Kaggle](https://www.kaggle.com/t/a9196b92680b4492aeb06aeaee94f654).
+2. Klik **Join Competition** dan setujui peraturan kompetisi jika diminta.
+3. Buka tab **Data**.
+4. Klik **Download All** untuk mengunduh dataset.
+5. Ekstrak file yang diunduh, kemudian letakkan `train.csv`, `test.csv`, dan `sample_submission.csv` ke dalam folder `data/`.
 
-## 3. Methodology
+File dataset berformat CSV tidak disimpan di GitHub karena dikecualikan melalui `.gitignore`.
 
-The project workflow consists of three main stages:
+## 3. Metodologi
 
-1. **Exploratory Data Analysis (EDA):** Examine dataset characteristics, missing values, duplicate records, feature distributions, and target distribution.
-2. **Modeling:** Perform data preprocessing, feature engineering, model comparison, and hyperparameter tuning.
-3. **Evaluation and Prediction:** Evaluate model performance using Macro F1-Score, accuracy, classification reports, and confusion matrix analysis, then generate predictions for the test dataset.
+Workflow proyek terdiri dari beberapa tahap berikut.
 
-The preprocessing and modeling workflow uses Scikit-learn `Pipeline` and `ColumnTransformer` to maintain consistency between training and prediction.
+1. **Exploratory Data Analysis (EDA)**  
+   Memeriksa karakteristik dataset, tipe data, missing values, duplikasi, statistik deskriptif, distribusi fitur, dan distribusi target.
 
-## 4. Models and Results
+2. **Preprocessing**  
+   Mengidentifikasi fitur numerik dan kategorik serta menyiapkan penanganan missing values, scaling, dan encoding sesuai tipe fitur.
 
-The evaluated classification algorithms include Logistic Regression, Decision Tree, Linear SVM, Random Forest, and LightGBM.
+3. **Feature Engineering**  
+   Menyiapkan fitur agar konsisten antara data training dan data test serta mempertahankan urutan kolom yang dibutuhkan model.
 
-LightGBM achieved the best validation performance among the tested models.
+4. **Modeling**  
+   Melatih dan membandingkan beberapa algoritma klasifikasi serta melakukan pengujian parameter untuk memperoleh model dengan performa terbaik.
 
-| Evaluation Metric | Validation Score |
+5. **Evaluation**  
+   Mengevaluasi model menggunakan Macro F1-Score, accuracy, classification report, dan confusion matrix.
+
+6. **Prediction**  
+   Menggunakan model final untuk menghasilkan prediksi pada data test dan menyimpannya dalam format submission yang sesuai dengan template.
+
+Preprocessing dan model disusun menggunakan `Pipeline` dan `ColumnTransformer` dari Scikit-learn agar proses pengolahan fitur dan prediksi tetap konsisten.
+
+## 4. Model dan Hasil Evaluasi
+
+Algoritma klasifikasi yang dievaluasi dalam proyek ini meliputi:
+
+- Logistic Regression
+- Decision Tree
+- Linear SVM
+- Random Forest
+- LightGBM
+
+LightGBM memperoleh performa validasi terbaik di antara model yang telah diuji.
+
+| Metrik Evaluasi | Skor Validasi |
 |---|---:|
 | Macro F1-Score | 0.538860 |
 | Accuracy | 0.567207 |
 
-Macro F1-Score is the primary evaluation metric because it considers performance across all classes.
+Macro F1-Score digunakan sebagai metrik utama karena memperhitungkan performa prediksi pada setiap kelas.
 
-The classification report indicates that Grade 2 and Grade 3 are more difficult for the model to identify than the other damage classes, with recall scores of 0.43 and 0.40, respectively. These results indicate that distinguishing between certain damage levels remains a challenge and provides an opportunity for further model improvement.
+### Interpretasi Hasil
 
-## 5. Project Structure
+Hasil evaluasi menunjukkan bahwa LightGBM menjadi model terbaik di antara algoritma yang telah diuji pada eksperimen proyek ini.
+
+Berdasarkan classification report, Grade 2 dan Grade 3 merupakan kelas yang lebih sulit dikenali dibandingkan kelas lainnya. Recall kedua kelas tersebut masing-masing sebesar 0.43 dan 0.40. Hal ini menunjukkan bahwa model masih mengalami kesulitan dalam mengidentifikasi sebagian bangunan pada tingkat kerusakan tersebut.
+
+Temuan ini menjadi dasar untuk pengembangan selanjutnya, khususnya melalui tuning parameter dan evaluasi kesalahan prediksi agar kemampuan model dalam membedakan tingkat kerusakan dapat ditingkatkan.
+
+## 5. Struktur Repository
 
 ```text
 structural-damage-classification/
 ├── data/
+│   └── .gitkeep
 ├── notebooks/
 │   ├── 01_eda.ipynb
 │   ├── 02_modeling.ipynb
@@ -72,6 +103,7 @@ structural-damage-classification/
 │   └── submission.csv
 ├── reports/
 │   ├── feature_importance.csv
+│   ├── model_comparison.csv
 │   └── figures/
 │       ├── confusion_matrix.png
 │       └── feature_importance.png
@@ -80,11 +112,78 @@ structural-damage-classification/
 └── .gitignore
 ```
 
-## 6. Tools and Technologies
+### Keterangan Struktur
 
-- **Python** — primary programming language.
-- **Pandas and NumPy** — data processing and manipulation.
-- **Scikit-learn** — preprocessing, pipelines, model evaluation, and validation.
-- **LightGBM** — final classification model.
-- **Matplotlib and Seaborn** — data visualization and evaluation reports.
-- **Jupyter Notebook** — exploratory data analysis and modeling experiments.
+- `data/` — menyimpan dataset lokal yang tidak diunggah ke GitHub.
+- `notebooks/` — berisi notebook EDA, eksperimen modeling, dan pembuatan submission.
+- `scripts/` — berisi fungsi preprocessing, feature engineering, training, prediksi, dan pembuatan laporan.
+- `models/` — menyimpan model final dan metadata model.
+- `submissions/` — menyimpan file hasil prediksi.
+- `reports/` — menyimpan hasil perbandingan model, feature importance, dan visualisasi evaluasi.
+- `requirements.txt` — mencatat dependency Python yang digunakan.
+- `.gitignore` — menentukan file dan folder yang tidak disertakan dalam Git.
+
+## 6. Cara Menjalankan Repository
+
+### Persiapan Environment
+
+Jalankan perintah berikut dari direktori utama project menggunakan terminal.
+
+Buat virtual environment:
+
+```powershell
+python -m venv project_sml
+```
+
+Aktifkan environment pada Windows PowerShell:
+
+```powershell
+.\project_sml\Scripts\Activate.ps1
+```
+
+Instal dependency:
+
+```powershell
+pip install -r requirements.txt
+```
+
+Pastikan dataset sudah tersedia di folder `data/` sebelum menjalankan script.
+
+### Menjalankan Script
+
+Jalankan perintah berikut secara berurutan dari direktori utama project.
+
+Training model:
+
+```powershell
+python -m scripts.train
+```
+
+Menghasilkan prediksi dan file submission:
+
+```powershell
+python -m scripts.predict
+```
+
+Menghasilkan laporan feature importance:
+
+```powershell
+python -m scripts.generate_report
+```
+
+### Menjalankan Notebook
+
+Notebook dapat dijalankan secara berurutan sesuai workflow berikut:
+
+1. `01_eda.ipynb` — eksplorasi dan pemahaman dataset.
+2. `02_modeling.ipynb` — preprocessing, eksperimen model, dan evaluasi.
+3. `03_submission.ipynb` — pembuatan dan pemeriksaan file submission.
+
+## 7. Tools and Technologies
+
+- **Python** — bahasa pemrograman utama.
+- **Pandas dan NumPy** — manipulasi dan pengolahan data.
+- **Scikit-learn** — preprocessing, Pipeline, ColumnTransformer, dan evaluasi model.
+- **LightGBM** — algoritma klasifikasi final.
+- **Matplotlib dan Seaborn** — visualisasi hasil analisis dan evaluasi.
+- **Jupyter Notebook** — eksplorasi dataset dan eksperimen modeling.
