@@ -1,5 +1,3 @@
-"""Fungsi preprocessing untuk klasifikasi kerusakan bangunan."""
-
 import numpy as np
 import pandas as pd
 
@@ -10,9 +8,7 @@ from sklearn.preprocessing import MinMaxScaler, OneHotEncoder
 
 
 def infer_target_column(train_data, test_data, sample_data=None):
-    """
-    Menentukan kolom target berdasarkan struktur data train dan test.
-    """
+    """Menentukan kolom target berdasarkan struktur dataset."""
 
     if sample_data is not None:
         sample_candidates = [
@@ -39,9 +35,7 @@ def infer_target_column(train_data, test_data, sample_data=None):
 
 
 def detect_id_columns(data):
-    """
-    Mendeteksi kolom yang kemungkinan berfungsi sebagai identifier.
-    """
+    """Mendeteksi kolom yang berpotensi menjadi identifier."""
 
     id_columns = []
     n_rows = max(len(data), 1)
@@ -82,13 +76,7 @@ def detect_id_columns(data):
 
 
 def identify_feature_types(data):
-    """
-    Mengidentifikasi fitur numerik dan kategorik.
-
-    Fitur numerik berkardinalitas rendah atau fitur dengan nama
-    yang mengindikasikan kode kategori dapat diperlakukan
-    sebagai fitur kategorik.
-    """
+    """Memisahkan fitur numerik dan kategorik."""
 
     categorical_columns = data.select_dtypes(
         include=["object", "category", "bool"]
@@ -148,12 +136,7 @@ def identify_feature_types(data):
 
 
 def build_preprocessor(numerical_columns, categorical_columns):
-    """
-    Membuat ColumnTransformer untuk fitur numerik dan kategorik.
-
-    Fitur numerik menggunakan median imputation dan MinMaxScaler.
-    Fitur kategorik menggunakan imputasi modus dan OneHotEncoder.
-    """
+    """Membangun pipeline preprocessing numerik dan kategorik."""
 
     if set(numerical_columns) & set(categorical_columns):
         raise ValueError(
@@ -164,14 +147,8 @@ def build_preprocessor(numerical_columns, categorical_columns):
 
     if numerical_columns:
         numerical_pipeline = Pipeline([
-            (
-                "imputer",
-                SimpleImputer(strategy="median")
-            ),
-            (
-                "scaler",
-                MinMaxScaler()
-            )
+            ("imputer", SimpleImputer(strategy="median")),
+            ("scaler", MinMaxScaler())
         ])
 
         transformers.append((
@@ -182,14 +159,8 @@ def build_preprocessor(numerical_columns, categorical_columns):
 
     if categorical_columns:
         categorical_pipeline = Pipeline([
-            (
-                "imputer",
-                SimpleImputer(strategy="most_frequent")
-            ),
-            (
-                "encoder",
-                OneHotEncoder(handle_unknown="ignore")
-            )
+            ("imputer", SimpleImputer(strategy="most_frequent")),
+            ("encoder", OneHotEncoder(handle_unknown="ignore"))
         ])
 
         transformers.append((

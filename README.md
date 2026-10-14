@@ -4,61 +4,52 @@
 
 ## 1. Project Overview
 
-This project aims to classify building damage levels based on structural characteristics using supervised machine learning. The project is based on the *Structural Damage Classification* Kaggle competition, which focuses on predicting building damage after an earthquake.
+This project applies supervised machine learning to classify building damage levels based on structural and building-related features. The target variable is `damage_grade`, representing five levels of building damage.
 
-The objective is to develop and evaluate classification models that can predict the `damage_grade` of buildings.
+## 2. Dataset
 
-## 2. Objectives
+The dataset is provided through the Kaggle competition used for this project. It consists of the following files:
 
-- Explore and understand the dataset.
-- Prepare numerical and categorical features for modeling.
-- Compare non-neural-network classification algorithms.
-- Evaluate model performance using Macro F1-Score.
-- Generate predictions in the required Kaggle submission format.
+- `train.csv` — training data containing target labels.
+- `test.csv` — data used to generate predictions.
+- `sample_submission.csv` — template for the prediction output.
 
-## 3. Dataset
+### Download Instructions
 
-The dataset is obtained from the Kaggle competition and includes:
+1. Open the Kaggle competition page provided for this assignment.
+2. Join the competition and accept the competition rules if required.
+3. Navigate to the **Data** tab.
+4. Click **Download All** to download the dataset files.
+5. Extract the downloaded files and place `train.csv`, `test.csv`, and `sample_submission.csv` inside the project's `data/` directory.
 
-| File | Description |
-|---|---|
-| `train.csv` | Training data containing building features and the target variable. |
-| `test.csv` | Data used to generate predictions. |
-| `sample_submission.csv` | Reference for the required submission format. |
-| Metadata file | Additional information provided with the competition data. |
+Dataset CSV files are excluded from GitHub through `.gitignore`.
 
-The dataset files are stored locally in the `data/` directory and are excluded from the GitHub repository.
+## 3. Methodology
 
-## 4. Methodology
+The project workflow consists of three main stages:
 
-The project follows these steps:
+1. **Exploratory Data Analysis (EDA):** Examine dataset characteristics, missing values, duplicate records, feature distributions, and target distribution.
+2. **Modeling:** Perform data preprocessing, feature engineering, model comparison, and hyperparameter tuning.
+3. **Evaluation and Prediction:** Evaluate model performance using Macro F1-Score, accuracy, classification reports, and confusion matrix analysis, then generate predictions for the test dataset.
 
-1. **Exploratory Data Analysis (EDA):** Examine dataset structure, feature types, missing values, and target distribution.
-2. **Preprocessing:** Handle missing values, scale numerical features, and encode categorical features.
-3. **Model Training:** Train and compare classification algorithms using a validation dataset.
-4. **Evaluation:** Assess model performance using Macro F1-Score, classification reports, and a confusion matrix.
-5. **Prediction:** Generate predictions for the test dataset and prepare the submission file.
+The preprocessing and modeling workflow uses Scikit-learn `Pipeline` and `ColumnTransformer` to maintain consistency between training and prediction.
 
-Preprocessing and model training are organized using `Pipeline` and `ColumnTransformer`.
+## 4. Models and Results
 
-## 5. Machine Learning Models
+The evaluated classification algorithms include Logistic Regression, Decision Tree, Linear SVM, Random Forest, and LightGBM.
 
-The following non-neural-network algorithms will be evaluated:
+LightGBM achieved the best validation performance among the tested models.
 
-| Model | Purpose |
-|---|---|
-| Logistic Regression | Baseline classification model. |
-| Extra Trees Classifier | Tree-based ensemble model for learning more complex patterns. |
+| Evaluation Metric | Validation Score |
+|---|---:|
+| Macro F1-Score | 0.538860 |
+| Accuracy | 0.567207 |
 
-The final model will be selected based on validation results.
+Macro F1-Score is the primary evaluation metric because it considers performance across all classes.
 
-## 6. Evaluation Metric
+The classification report indicates that Grade 2 and Grade 3 are more difficult for the model to identify than the other damage classes, with recall scores of 0.43 and 0.40, respectively. These results indicate that distinguishing between certain damage levels remains a challenge and provides an opportunity for further model improvement.
 
-The primary evaluation metric is **Macro F1-Score**, which calculates the F1-Score for each class and gives equal weight to all classes.
-
-Additional evaluation uses a classification report and confusion matrix to examine model performance across the five `damage_grade` classes.
-
-## 7. Project Structure
+## 5. Project Structure
 
 ```text
 structural-damage-classification/
@@ -72,60 +63,28 @@ structural-damage-classification/
 │   ├── preprocess.py
 │   ├── feature_engineering.py
 │   ├── train.py
-│   └── predict.py
+│   ├── predict.py
+│   └── generate_report.py
 ├── models/
+│   ├── final_damage_model.joblib
+│   └── model_metadata.json
 ├── submissions/
+│   └── submission.csv
 ├── reports/
+│   ├── feature_importance.csv
 │   └── figures/
+│       ├── confusion_matrix.png
+│       └── feature_importance.png
 ├── README.md
 ├── requirements.txt
 └── .gitignore
 ```
 
-## 8. Tools and Technologies
+## 6. Tools and Technologies
 
-- Python
-- Pandas and NumPy
-- Scikit-learn
-- Matplotlib and Seaborn
-- Jupyter Notebook
-- Git and GitHub
-- Kaggle
-
-## 9. Installation and Usage
-
-### Create a virtual environment
-
-```powershell
-python -m venv project_sml
-.\project_sml\Scripts\Activate.ps1
-```
-
-### Install dependencies
-
-```bash
-python -m pip install -r requirements.txt
-```
-
-### Prepare the dataset
-
-Download the competition files from Kaggle and place them in the `data/` directory, keeping their original filenames.
-
-### Run the notebooks
-
-Execute the notebooks in the following order:
-
-1. `01_eda.ipynb`
-2. `02_modeling.ipynb`
-3. `03_submission.ipynb`
-
-## 10. Results and Interpretation
-
-Model performance, validation Macro F1-Scores, evaluation findings, and Kaggle leaderboard results will be documented after the experiments are completed.
-
-The final interpretation will explain the selected model, its performance across classes, and its limitations.
-
-## References
-
-- [Structural Damage Classification — Kaggle Competition](https://www.kaggle.com/competitions/structural-damage-classification/overview)
-- Tugas 1 — Supervised Machine Learning Assignment
+- **Python** — primary programming language.
+- **Pandas and NumPy** — data processing and manipulation.
+- **Scikit-learn** — preprocessing, pipelines, model evaluation, and validation.
+- **LightGBM** — final classification model.
+- **Matplotlib and Seaborn** — data visualization and evaluation reports.
+- **Jupyter Notebook** — exploratory data analysis and modeling experiments.

@@ -1,7 +1,6 @@
-"""Prediksi data test dan pembuatan submission Kaggle."""
+"""Membuat prediksi data test dan menghasilkan file submission."""
 
 import json
-import re
 import sys
 import joblib
 import numpy as np
@@ -20,21 +19,7 @@ from scripts.feature_engineering import engineer_features
 
 
 def convert_predictions(predictions, sample_target):
-    """
-    Menyesuaikan tipe label prediksi dengan template submission.
-
-    Parameters
-    ----------
-    predictions : array-like
-        Hasil prediksi model.
-    sample_target : pandas.Series
-        Kolom target dari template submission.
-
-    Returns
-    -------
-    pandas.Series
-        Prediksi dengan tipe label yang sesuai template.
-    """
+    """Menyesuaikan tipe label prediksi dengan format template."""
 
     predictions = pd.Series(predictions)
 
@@ -44,7 +29,6 @@ def convert_predictions(predictions, sample_target):
             errors="coerce"
         )
 
-        # Mengonversi label seperti 'Grade 1' menjadi angka 1.
         if numeric_predictions.isna().any():
             extracted = predictions.astype(str).str.extract(
                 r"(\d+)",
@@ -78,7 +62,6 @@ def convert_predictions(predictions, sample_target):
 def main():
     """Memuat model, memprediksi data test, dan menyimpan submission."""
 
-    # 1. Menentukan lokasi file.
     data_dir = PROJECT_ROOT / "data"
     model_dir = PROJECT_ROOT / "models"
     submission_dir = PROJECT_ROOT / "submissions"
@@ -102,7 +85,6 @@ def main():
                 "Pastikan scripts/train.py sudah dijalankan."
             )
 
-    # 2. Memuat dataset, model, dan metadata.
     test_df = pd.read_csv(test_path, low_memory=False)
     sample_submission = pd.read_csv(sample_path)
     final_model = joblib.load(model_path)
@@ -128,7 +110,6 @@ def main():
     print("Test shape:", test_df.shape)
     print("Model:", metadata["best_model_name"])
 
-    # 3. Menyesuaikan urutan data dengan template melalui ID.
     shared_ids = [
         col for col in id_columns
         if col in test_df.columns
@@ -179,7 +160,6 @@ def main():
             "Urutan asli data test dipertahankan."
         )
 
-    # 4. Menyiapkan fitur sesuai metadata training.
     missing_features = [
         col for col in feature_columns
         if col not in test_df.columns
@@ -195,16 +175,18 @@ def main():
         expected_columns=feature_columns
     )
 
-    # 5. Melakukan prediksi.
     predictions = final_model.predict(X_test)
 
     if len(predictions) != len(sample_submission):
-        raise ValueError("Jumlah prediksi tidak sesuai template.")
+        raise ValueError(
+            "Jumlah prediksi tidak sesuai template."
+        )
 
     if pd.isna(predictions).any():
-        raise ValueError("Prediksi mengandung missing values.")
+        raise ValueError(
+            "Prediksi mengandung missing values."
+        )
 
-    # 6. Membuat submission sesuai format resmi.
     submission = sample_submission.copy()
 
     submission[target_column] = convert_predictions(
@@ -215,9 +197,10 @@ def main():
     submission = submission[sample_submission.columns]
 
     if submission.isna().any().any():
-        raise ValueError("Submission mengandung missing values.")
+        raise ValueError(
+            "Submission mengandung missing values."
+        )
 
-    # 7. Menyimpan hasil submission.
     submission_dir.mkdir(parents=True, exist_ok=True)
 
     submission_path = submission_dir / "submission.csv"
@@ -227,7 +210,6 @@ def main():
         index=False
     )
 
-    # 8. Membaca kembali file untuk pemeriksaan.
     check = pd.read_csv(submission_path)
 
     if len(check) != len(test_df):

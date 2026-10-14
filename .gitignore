@@ -1,17 +1,22 @@
 # Dataset
 data/*.csv
+!data/.gitkeep
 
-# Virtual environment
+# Virtual Environment
 project_sml/
 .venv/
 venv/
 
-# Python cache
+# Python Cache
 __pycache__/
 *.py[cod]
 
-# Jupyter
+# Jupyter Notebook
 .ipynb_checkpoints/
 
-# Environment variables
+# Environment Variables
 .env
+
+# Operating System
+.DS_Store
+Thumbs.db

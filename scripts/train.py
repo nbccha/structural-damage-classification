@@ -1,4 +1,4 @@
-"""Training dan evaluasi model LightGBM untuk klasifikasi kerusakan bangunan."""
+"""Melatih dan mengevaluasi model LightGBM klasifikasi kerusakan bangunan."""
 
 import json
 import sys
@@ -15,7 +15,7 @@ from sklearn.metrics import (
 )
 from lightgbm import LGBMClassifier
 
-# Menambahkan folder utama project ke Python path.
+
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 if str(PROJECT_ROOT) not in sys.path:
@@ -32,9 +32,8 @@ from scripts.feature_engineering import engineer_features
 
 
 def main():
-    """Menyiapkan data, mengevaluasi LightGBM, dan menyimpan model final."""
+    """Melatih model, mengevaluasi performa, dan menyimpan model final."""
 
-    # 1. Load dataset.
     data_dir = PROJECT_ROOT / "data"
 
     train_path = data_dir / "train.csv"
@@ -61,10 +60,12 @@ def main():
     print("Train shape:", train_df.shape)
     print("Test shape:", test_df.shape)
 
-    # 2. Memisahkan target dan fitur.
     valid_mask = train_df[target_column].notna()
 
-    y = train_df.loc[valid_mask, target_column].reset_index(drop=True)
+    y = train_df.loc[
+        valid_mask,
+        target_column
+    ].reset_index(drop=True)
 
     X_raw = train_df.loc[valid_mask].drop(
         columns=[target_column]
@@ -78,7 +79,9 @@ def main():
     ]
 
     if not feature_columns:
-        raise ValueError("Tidak ada fitur yang tersedia untuk training.")
+        raise ValueError(
+            "Tidak ada fitur yang tersedia untuk training."
+        )
 
     missing_test = [
         col for col in feature_columns
@@ -90,13 +93,11 @@ def main():
             f"Fitur training tidak tersedia pada test: {missing_test}"
         )
 
-    # 3. Feature engineering.
     X = engineer_features(
         X_raw[feature_columns],
         expected_columns=feature_columns
     )
 
-    # 4. Identifikasi tipe fitur dan preprocessing.
     numerical_columns, categorical_columns = (
         identify_feature_types(X)
     )
@@ -105,7 +106,6 @@ def main():
     print("Numerical features:", len(numerical_columns))
     print("Categorical features:", len(categorical_columns))
 
-    # 5. Pembagian data untuk evaluasi.
     stratify_target = (
         y if y.value_counts().min() >= 2 else None
     )
@@ -118,7 +118,6 @@ def main():
         stratify=stratify_target
     )
 
-    # 6. Konfigurasi LightGBM terbaik yang telah diuji.
     final_params = {
         "n_estimators": 500,
         "learning_rate": 0.08,
@@ -152,7 +151,6 @@ def main():
         )
     ])
 
-    # 7. Evaluasi pada validation set.
     validation_model.fit(X_train, y_train)
 
     y_pred = validation_model.predict(X_valid)
@@ -181,7 +179,6 @@ def main():
         )
     )
 
-    # 8. Training final menggunakan seluruh data berlabel.
     final_model = Pipeline([
         (
             "prep",
@@ -204,7 +201,6 @@ def main():
 
     final_model.fit(X, y)
 
-    # 9. Menyimpan model dan metadata.
     model_dir = PROJECT_ROOT / "models"
     model_dir.mkdir(parents=True, exist_ok=True)
 
