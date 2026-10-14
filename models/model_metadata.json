@@ -1,0 +1,38 @@
+{
+  "target_column": "damage_grade",
+  "feature_columns": [
+    "district_id",
+    "vdcmun_id",
+    "ward_id",
+    "count_floors_pre_eq",
+    "age_building",
+    "plinth_area_sq_ft",
+    "height_ft_pre_eq",
+    "land_surface_condition",
+    "foundation_type",
+    "roof_type",
+    "ground_floor_type",
+    "other_floor_type",
+    "position",
+    "plan_configuration",
+    "superstructure"
+  ],
+  "id_columns": [
+    "building_id"
+  ],
+  "best_model_name": "LightGBM",
+  "validation_macro_f1": 0.53886,
+  "baseline_macro_f1": 0.507869,
+  "model_params": {
+    "n_estimators": 500,
+    "learning_rate": 0.08,
+    "num_leaves": 63,
+    "max_depth": 15,
+    "min_child_samples": 20,
+    "subsample": 1.0,
+    "subsample_freq": 1,
+    "colsample_bytree": 1.0,
+    "reg_lambda": 0,
+    "class_weight": "balanced"
+  }
+}

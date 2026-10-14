@@ -1,0 +1,17 @@
+# Dataset
+data/*.csv
+
+# Virtual environment
+project_sml/
+.venv/
+venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Environment variables
+.env
